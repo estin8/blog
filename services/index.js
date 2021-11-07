@@ -5,7 +5,7 @@ const graphqlAPI = process.env.NEXT_PUBLIC_GRAPHCMS_ENDPOINT;
 export const getPosts = async () => {
   const query = gql`
     query MyQuery {
-      postsConnection {
+      postsConnection(orderBy: createdAt_DESC) {
         edges {
           node {
             author {
@@ -42,8 +42,8 @@ export const getRecentPosts = async () => {
   const query = gql`
   query GetPostDetails() {
     posts(
-      orderBy: createdAt_DESC
-      last: 3
+      orderBy: createdAt_DESC,
+      last: 10
     ) {
       title
       featuredImage {
@@ -67,8 +67,9 @@ export const getSimilarPosts = async (categories, slug) => {
         where: {
           slug_not: $slug
           AND: { categories_some: { slug_in: $categories } }
-        }
-        last: 3
+        },
+        last: 3,
+        orderBy: createdAt_DESC
       ) {
         title
         featuredImage {
@@ -102,7 +103,7 @@ export const getCategories = async () => {
 export const getPostDetails = async (slug) => {
   const query = gql`
     query GetPostDetails($slug: String!) {
-      post(where: { slug: $slug }) {
+      post(where: { slug: $slug }, ) {
         title
         excerpt
         featuredImage {
@@ -133,23 +134,7 @@ export const getPostDetails = async (slug) => {
   return result.post;
 };
 
-function absoluteUrl(req, setLocalhost) {
-  var protocol = 'https:';
-  var host = req
-    ? req.headers['x-forwarded-host'] || req.headers['host']
-    : window.location.host;
 
-  if (host.indexOf('localhost') > -1) {
-    if (setLocalhost) host = setLocalhost;
-    protocol = 'http:';
-  }
-
-  return {
-    protocol: protocol,
-    host: host,
-    origin: protocol + '//' + host,
-  };
-}
 
 export const submitComment = async (obj) => {
   const proxy = 'https://cors-anywhere.herokuapp.com/';
