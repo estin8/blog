@@ -133,15 +133,33 @@ export const getPostDetails = async (slug) => {
   return result.post;
 };
 
+function absoluteUrl(req, setLocalhost) {
+  var protocol = "https:";
+  var host = req
+    ? req.headers["x-forwarded-host"] || req.headers["host"]
+    : window.location.host;
+
+  if (host.indexOf("localhost") > -1) {
+    if (setLocalhost) host = setLocalhost;
+    protocol = "http:";
+  }
+
+  return {
+    protocol: protocol,
+    host: host,
+    origin: protocol + "//" + host,
+  };
+}
+
 export const submitComment = async (obj) => {
-  if(global.window) {
-  const result = await fetch('/api/comments', {
+  const { origin } = absoluteUrl(req, "localhost:3000");
+  const result = await fetch(`${origin}/api/comments`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(obj)
-  })};
+  });
 
   return result.json();
 }
