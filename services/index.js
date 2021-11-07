@@ -133,36 +133,21 @@ export const getPostDetails = async (slug) => {
   return result.post;
 };
 
-function absoluteUrl(req, setLocalhost) {
-  var protocol = "https:";
-  var host = req
-    ? req.headers["x-forwarded-host"] || req.headers["host"]
-    : window.location.host;
 
-  if (host.indexOf("localhost") > -1) {
-    if (setLocalhost) host = setLocalhost;
-    protocol = "http:";
-  }
-
-  return {
-    protocol: protocol,
-    host: host,
-    origin: protocol + "//" + host,
-  };
-}
 
 export const submitComment = async (obj) => {
-  const { origin } = absoluteUrl(req, "localhost:3000");
-  const result = await fetch(`${origin}/api/comments`, {
+const baseURL = 'http://localhost';
+const url = '/api/comments'
+const result = await fetch(new URL(url, baseURL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(obj)
-  });
+  }));
 
   return result.json();
-}
+};
 
 export const getComments = async (slug) => {
   const query = gql`
