@@ -134,7 +134,7 @@ export const getPostDetails = async (slug) => {
 };
 
 export const submitComment = async (obj) => {
-  const result = await fetch('https://localhost:3000/api/comments', {
+  const result = await fetch('https://blog2-bzqafi69d-estin8.vercel.app/api/comments', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
