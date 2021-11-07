@@ -153,7 +153,7 @@ function absoluteUrl(req, setLocalhost) {
 
 export const submitComment = async (obj) => {
   const proxy = 'https://cors-anywhere.herokuapp.com/';
-  const url = '/api/comments'
+  const url = 'https://blog-estin8.vercel.app/api/comments'
   const result = await fetch(url,
     {
       method: 'POST',
