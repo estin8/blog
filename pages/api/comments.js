@@ -10,7 +10,8 @@ export default async function comments(req, res) {
   const { name, email, slug, comment } = req.body;
   const graphQLClient = new  GraphQLClient(graphqlAPI, {
     headers: {
-      authorization: `Bearer ${graphcmsToken}`}
+      authorization: `Bearer ${graphcmsToken}`,
+      }
   })
 
   const query = gql`mutation CreateComment($name: String!, $email: String!, $comment: String!, $slug: String!) {createComment(data: {name: $name, email: $email, comment: $comment, post: { connect: { slug: $slug } } }) { id }}`

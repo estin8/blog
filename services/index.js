@@ -100,15 +100,15 @@ export const getCategories = async () => {
 };
 
 export const getPostDetails = async (slug) => {
-   const query = gql`
-    query GetPostDetails($slug : String!) {
+  const query = gql`
+    query GetPostDetails($slug: String!) {
       post(where: { slug: $slug }) {
         title
         excerpt
         featuredImage {
           url
         }
-        author{
+        author {
           name
           bio
           photo {
@@ -133,18 +133,36 @@ export const getPostDetails = async (slug) => {
   return result.post;
 };
 
+function absoluteUrl(req, setLocalhost) {
+  var protocol = 'https:';
+  var host = req
+    ? req.headers['x-forwarded-host'] || req.headers['host']
+    : window.location.host;
 
+  if (host.indexOf('localhost') > -1) {
+    if (setLocalhost) host = setLocalhost;
+    protocol = 'http:';
+  }
+
+  return {
+    protocol: protocol,
+    host: host,
+    origin: protocol + '//' + host,
+  };
+}
 
 export const submitComment = async (obj) => {
-const baseURL = 'http://localhost';
-const url = '/api/comments'
-const result = await fetch(new URL(url, baseURL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(obj)
-  }));
+  const proxy = 'https://cors-anywhere.herokuapp.com/';
+  const url = 'https://blog2-bzqafi69d-estin8.vercel.app/api/comments'
+  const result = await fetch(url,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(obj),
+    }
+  );
 
   return result.json();
 };
@@ -152,16 +170,16 @@ const result = await fetch(new URL(url, baseURL, {
 export const getComments = async (slug) => {
   const query = gql`
     query GetComments($slug: String!) {
-      comments(where: { post: { slug: $slug }}){
+      comments(where: { post: { slug: $slug } }) {
         name
         createdAt
         comment
       }
     }
-  `
+  `;
   const result = await request(graphqlAPI, query, { slug });
-  return result.comments
-}
+  return result.comments;
+};
 
 export const getFeaturedPosts = async () => {
   const query = gql`
